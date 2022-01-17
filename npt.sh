@@ -25,16 +25,23 @@ echo $'[ 22 ]\nnmap -p22 -sV -sC -oN '$ip'_p22_nmap.txt '$ip;
 echo $'nmap -p22 --script=ssh2-enum-algos -oN '$ip'_p22_nmap_algos.txt '$ip;
 echo $'\n';
 
+echo $'[ 23 ]\nnmap -p23 -sV -sC -oN '$ip'_p23_nmap.txt '$ip;
+echo $' -if "telnet is unencrypted", capture the session on wireshark.';
+echo $'\n';
+
 echo $'[ http ]\nnmap -p80 -sV -sC -oN '$ip'_p80_nmap.txt '$ip;
 echo $'nmap -sV -sC -oN '$ip'_pPORT_nmap.txt '$ip' -pPORT';
 echo $'\n';
 
-echo $'[ https ]\n~/Desktop/tools/testssl.sh/testssl --csv '$ip':<port>';
+echo $'[ ntp ]\nnmap -p123 -sV --script=ntp-monlist,ntp-info -oN '$ip'_p123_nmap.txt';
+echo $' -to verify "ntp mode 6 queries" allowed:\n  $ ntpq -c rv';
+echo $'\n';
+
+echo $'[ https ]\n~/Desktop/tools/testssl.sh/testssl --html -9 '$ip':<port>';
 echo $'\n';
 
 echo $'[ smb ]\nnmap -p139,445 -sV -sC '$ip' -oN '$ip'_p139,445_nmap.txt';
-echo $'if its smb signing not required:\n -run wireshark\n -run smbclient -L \\\\\\\\'$ip$'\n -in wireshark, filter tcp.port==445\n -look for Security Mode in one of the responses & verify that it states not required.';
+echo $'if its "smb signing not required":\n -run wireshark\n -run smbclient -L \\\\\\\\'$ip$'\n -in wireshark, filter tcp.port==445\n -look for Security Mode in one of the responses & verify that it states not required.';
 echo $'\n';
 
 echo $'[ 3389 ]\nnmap -p3389 --script=rdp-enum-encryption,rdp-ntlm-info -sV -oN '$ip'_p3389_nmap.txt '$ip;
-
