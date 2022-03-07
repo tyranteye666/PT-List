@@ -41,7 +41,7 @@ echo $'[ https ]\n~/Desktop/tools/testssl.sh/testssl --html -9 '$ip':<port>';
 echo $'\n';
 
 echo $'[ smb ]\nnmap -p139,445 -sV -sC '$ip' -oN '$ip'_p139,445_nmap.txt';
-echo $'if its "smb signing not required":\n -run wireshark\n -run smbclient -L \\\\\\\\'$ip$'\n -in wireshark, filter smb2.sec_mode.sign_required == 0\n -look for Security Mode in one of the responses & verify that it states not required.';
+echo $'if its "smb signing not required":\n -run wireshark\n -run smbclient -L \\\\\\\\'$ip$'\n -in wireshark, filter smb2.sec_mode.sign_required == 0 or tcp.port==445\n -look for "Security Mode" in one of the Negotiate Protocol Responses & verify that "Signing Required" states False.;
 echo $'\n';
 
 echo $'[ 3389 ]\nnmap -p3389 --script=rdp-enum-encryption,rdp-ntlm-info -sV -oN '$ip'_p3389_nmap.txt '$ip;
