@@ -16,7 +16,7 @@ then
 fi
 
 # print commands
-echo $'hey! remember to do nessus\n-----------------------------';
+echo $'hey! remember to do nessus\n============================';
 
 echo $'[ 21 ]\nnmap -p21 -sV -sC -oN '$ip'_p21_nmap.txt '$ip;
 echo $'\n';
@@ -45,3 +45,13 @@ echo $'if its "smb signing not required":\n -run wireshark\n -run smbclient -L \
 echo $'\n';
 
 echo $'[ 3389 ]\nnmap -p3389 --script=rdp-enum-encryption,rdp-ntlm-info -sV -oN '$ip'_p3389_nmap.txt '$ip;
+
+echo $'[ dns ]';
+echo $' -if its "DNS Query ID Field Prediction Cache Poisoning": nmap -sU -p 53 --script=dns-random-srcport '$ip;
+echo $' -if its "DNS Server Cache Snooping Remote Information Disclosure": nmap -sU -p 53 --script dns-cache-snoop.nse --script-args \'dns-cache-snoop.mode=timed,dns-cache-snoop.domains={host1,host2,host3}\''$ip;
+echo $' -if its for "DNS Server Zone Transfer Information Disclosure (AXFR)":\n nmap -p53 --script dns-zone-transfer.nse \
+     --script-args dns-zone-transfer.domain=<domain> '$ip;
+     
+ echo $'[ java rmi ]';
+ echo $'java -jar rmg-4.3.0-jar-with-dependencies.jar enum '$ip' pPORT --verbose';
+ echo $' -add --follow if it redirects';
