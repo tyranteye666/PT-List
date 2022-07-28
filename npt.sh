@@ -39,6 +39,7 @@ echo $'\n';
 
 echo $'[ https ]\n~/Desktop/tools/testssl.sh/testssl.sh --html --csv -9 '$ip':<port>';
 echo $' -if its RDP / Port 3389, use this instead: sslscan --xml='$ip'_p3389_sslscan.xml --rdp '$ip;
+echo $'  [HTTP TRACE/TRACK ENABLED] : curl -v -X TRACE https://'$ip' -k -i';
 echo $'\n';
 
 echo $'[ smb ]\nnmap -p139,445 -sV -sC '$ip' -oN '$ip'_p139,445_nmap.txt';
