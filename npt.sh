@@ -21,6 +21,11 @@ fi
 echo $'hey! remember to do nessus\n============================';
 
 echo '
+if unable to ping, sudo nmap -sn -PE -PA80,443,3389,135,445 10.0.0.0/24
+-sn: Ping-only, no port scan
+-PE: ICMP echo (ping)
+-PA: TCP ACK ping on common ports
+(finds hosts even with ICMP blocked)
 
 [ 21 || FTP ]
 	// nmap //
